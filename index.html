@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel Snapper</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <main class="workspace">
+      <div class="tool-column">
+        <section class="panel controls-panel">
+          <div class="panel__header panel__header--stacked">
+            <div>
+              <p class="eyebrow">Tool Deck</p>
+              <h2>Control Suite</h2>
+            </div>
+            <button id="reprocessButton" class="button button--ghost" type="button" disabled>Re-snap</button>
+          </div>
+
+          <div class="tab-shell">
+            <div class="tab-list" role="tablist" aria-label="Control Sections">
+              <button
+                id="tab-export"
+                class="tab-button is-active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-export"
+                data-tab-group="controls"
+                data-tab-trigger="export"
+              >
+                Export
+              </button>
+              <button
+                id="tab-tuning"
+                class="tab-button"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-tuning"
+                data-tab-group="controls"
+                data-tab-trigger="tuning"
+                tabindex="-1"
+              >
+                Tuning
+              </button>
+              <button
+                id="tab-advanced"
+                class="tab-button"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-advanced"
+                data-tab-group="controls"
+                data-tab-trigger="advanced"
+                tabindex="-1"
+              >
+                Advanced
+              </button>
+              <button
+                id="tab-assist"
+                class="tab-button"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-assist"
+                data-tab-group="controls"
+                data-tab-trigger="assist"
+                tabindex="-1"
+              >
+                Assist
+              </button>
+              <button
+                id="tab-settings"
+                class="tab-button"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-settings"
+                data-tab-group="controls"
+                data-tab-trigger="settings"
+                tabindex="-1"
+              >
+                Settings
+              </button>
+            </div>
+
+            <div class="tab-panels">
+              <section
+                id="panel-export"
+                class="tab-panel is-active"
+                role="tabpanel"
+                aria-labelledby="tab-export"
+                data-tab-group="controls"
+                data-tab-panel="export"
+              >
+                <label class="control" for="paletteRange">
+                  <span>Palette Colors</span>
+                  <div class="control__row">
+                    <input id="paletteRange" type="range" min="2" max="256" step="1" value="16" disabled>
+                    <output id="paletteValue" for="paletteRange">16</output>
+                  </div>
+                </label>
+
+                <div class="toggles">
+                  <label class="toggle" for="paletteClampEnabled">
+                    <input id="paletteClampEnabled" type="checkbox" disabled>
+                    <span>Apply palette clamp to final colors</span>
+                  </label>
+                </div>
+
+                <label class="control" for="engineProfile">
+                  <span>Engine Export Profile</span>
+                  <select id="engineProfile" class="select-input" disabled>
+                    <option value="custom">Custom</option>
+                    <option value="unity_urp">Unity URP 2D</option>
+                    <option value="unreal_paper2d">Unreal Paper2D</option>
+                    <option value="webgl_indexed">Indexed WebGL</option>
+                    <option value="lut_256">256-color LUT Shader</option>
+                    <option value="retro_gba">Retro GBA / SNES</option>
+                  </select>
+                </label>
+
+                <label class="control" for="quickTuningPreset">
+                  <span>Quick Tuning Settings</span>
+                  <select id="quickTuningPreset" class="select-input" disabled>
+                    <option value="custom">Custom</option>
+                    <option value="balanced_cleanup">Balanced Cleanup</option>
+                    <option value="source_preserve">Source Preserve</option>
+                    <option value="crisp_sprite">Crisp Sprite Cleanup</option>
+                    <option value="retro_handheld">Retro Handheld</option>
+                    <option value="web_icon">Web / UI Icon</option>
+                    <option value="soft_gradients">Soft Gradient Preserve</option>
+                    <option value="portrait_cleanup">Portrait Cleanup</option>
+                    <option value="creature_sprite">Creature Sprite</option>
+                    <option value="hard_surface">Hard Surface Prop</option>
+                    <option value="tileset_environment">Tileset Environment</option>
+                    <option value="silhouette_readable">Silhouette Readability</option>
+                    <option value="shader_ready_indexed">Shader-ready Indexed</option>
+                    <option value="print_atlas">Print / Atlas Prep</option>
+                  </select>
+                </label>
+
+                <label class="control" for="sampleScaleRange">
+                  <span>Sampling Resolution</span>
+                  <div class="control__row">
+                    <input id="sampleScaleRange" type="range" min="5" max="100" step="5" value="100" disabled>
+                    <output id="sampleScaleValue" for="sampleScaleRange">100%</output>
+                  </div>
+                </label>
+
+                <label class="control" for="exportPaddingRange">
+                  <span>Pixel Padding</span>
+                  <div class="control__row">
+                    <input id="exportPaddingRange" type="range" min="0" max="16" step="1" value="0" disabled>
+                    <output id="exportPaddingValue" for="exportPaddingRange">0 px</output>
+                  </div>
+                </label>
+
+                <label class="control" for="scaleRange">
+                  <span>Export Scale</span>
+                  <div class="control__row">
+                    <input id="scaleRange" type="range" min="0.05" max="16" step="0.05" value="1" disabled>
+                    <output id="scaleValue" for="scaleRange">1.00x</output>
+                  </div>
+                </label>
+
+                <div class="dimension-grid">
+                  <label class="control" for="widthInput">
+                    <span>Output Width</span>
+                    <input id="widthInput" type="number" min="1" max="8192" step="1" value="1" disabled>
+                  </label>
+                  <label class="control" for="heightInput">
+                    <span>Output Height</span>
+                    <input id="heightInput" type="number" min="1" max="8192" step="1" value="1" disabled>
+                  </label>
+                </div>
+
+                <div class="toggles">
+                  <label class="toggle" for="aspectLock">
+                    <input id="aspectLock" type="checkbox" checked disabled>
+                    <span>Keep detected aspect ratio</span>
+                  </label>
+                  <label class="toggle" for="powerOfTwo">
+                    <input id="powerOfTwo" type="checkbox" disabled>
+                    <span>Force power-of-two output</span>
+                  </label>
+                  <label class="toggle" for="orderedDither">
+                    <input id="orderedDither" type="checkbox" disabled>
+                    <span>Enable ordered dithering</span>
+                  </label>
+                  <button id="resetSizeButton" class="button button--ghost" type="button" disabled>Use Detected Grid</button>
+                </div>
+
+                <div class="tool-section">
+                  <p class="tool-section__title">Export Extras</p>
+
+                  <div class="toggles">
+                    <label class="toggle" for="exportMetadata">
+                      <input id="exportMetadata" type="checkbox" disabled>
+                      <span>Include metadata JSON</span>
+                    </label>
+                    <label class="toggle" for="exportPaletteLut">
+                      <input id="exportPaletteLut" type="checkbox" disabled>
+                      <span>Include palette LUT</span>
+                    </label>
+                    <label class="toggle" for="exportMaterialMap">
+                      <input id="exportMaterialMap" type="checkbox" disabled>
+                      <span>Include material map</span>
+                    </label>
+                    <label class="toggle" for="exportNormalMap">
+                      <input id="exportNormalMap" type="checkbox" disabled>
+                      <span>Include normal map</span>
+                    </label>
+                    <label class="toggle" for="exportAoMap">
+                      <input id="exportAoMap" type="checkbox" disabled>
+                      <span>Include AO map</span>
+                    </label>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                id="panel-tuning"
+                class="tab-panel"
+                role="tabpanel"
+                aria-labelledby="tab-tuning"
+                data-tab-group="controls"
+                data-tab-panel="tuning"
+                hidden
+              >
+                <div class="tool-section tool-section--flush">
+                  <p class="tool-section__title">Quality Tuning</p>
+
+                  <div class="toggles">
+                    <label class="toggle" for="bypassSnap">
+                      <input id="bypassSnap" type="checkbox" disabled>
+                      <span>Skip snap + quantize (edit source pixels)</span>
+                    </label>
+                  </div>
+
+                  <label class="control" for="paletteBalanceRange">
+                    <span>Palette Balance</span>
+                    <div class="control__row">
+                      <input id="paletteBalanceRange" type="range" min="40" max="160" step="5" value="100" disabled>
+                      <output id="paletteBalanceValue" for="paletteBalanceRange">1.00x</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="gridSensitivityRange">
+                    <span>Grid Sensitivity</span>
+                    <div class="control__row">
+                      <input id="gridSensitivityRange" type="range" min="0" max="100" step="1" value="63" disabled>
+                      <output id="gridSensitivityValue" for="gridSensitivityRange">0.20</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="sharpenRange">
+                    <span>Sharpen</span>
+                    <div class="control__row">
+                      <input id="sharpenRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="sharpenValue" for="sharpenRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="ditherRange">
+                    <span>Dither Strength</span>
+                    <div class="control__row">
+                      <input id="ditherRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="ditherValue" for="ditherRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="noiseJitterRange">
+                    <span>Noise Distribution</span>
+                    <div class="control__row">
+                      <input id="noiseJitterRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="noiseJitterValue" for="noiseJitterRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="despeckleRange">
+                    <span>Despeckle</span>
+                    <div class="control__row">
+                      <input id="despeckleRange" type="range" min="0" max="3" step="1" value="0" disabled>
+                      <output id="despeckleValue" for="despeckleRange">0 passes</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="mixelRange">
+                    <span>Mixel Cleanup</span>
+                    <div class="control__row">
+                      <input id="mixelRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="mixelValue" for="mixelRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="mixelGuardRange">
+                    <span>Mixel Guard</span>
+                    <div class="control__row">
+                      <input id="mixelGuardRange" type="range" min="0" max="100" step="1" value="85" disabled>
+                      <output id="mixelGuardValue" for="mixelGuardRange">85%</output>
+                    </div>
+                  </label>
+                </div>
+              </section>
+
+              <section
+                id="panel-assist"
+                class="tab-panel"
+                role="tabpanel"
+                aria-labelledby="tab-assist"
+                data-tab-group="controls"
+                data-tab-panel="assist"
+                hidden
+              >
+                <div class="tool-section tool-section--flush">
+                  <p class="tool-section__title">Local Assist Tools</p>
+
+                  <div class="toggles">
+                    <label class="toggle" for="semanticAssist">
+                      <input id="semanticAssist" type="checkbox" checked disabled>
+                      <span>Enable local semantic read</span>
+                    </label>
+                    <label class="toggle" for="subjectMaskAssist">
+                      <input id="subjectMaskAssist" type="checkbox" checked disabled>
+                      <span>Use lightweight subject mask</span>
+                    </label>
+                    <label class="toggle" for="smartTuneAssist">
+                      <input id="smartTuneAssist" type="checkbox" checked disabled>
+                      <span>Enable smart tuning suggestions</span>
+                    </label>
+                  </div>
+
+                  <label class="control" for="assistStrengthRange">
+                    <span>Suggestion Strength</span>
+                    <div class="control__row">
+                      <input id="assistStrengthRange" type="range" min="0" max="100" step="1" value="50" disabled>
+                      <output id="assistStrengthValue" for="assistStrengthRange">50%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="assistPassesRange">
+                    <span>Search Passes</span>
+                    <div class="control__row">
+                      <input id="assistPassesRange" type="range" min="1" max="6" step="1" value="3" disabled>
+                      <output id="assistPassesValue" for="assistPassesRange">3 passes</output>
+                    </div>
+                  </label>
+
+                  <button id="applyAssistButton" class="button button--ghost" type="button" disabled>
+                    Apply Suggested Settings
+                  </button>
+                </div>
+              </section>
+
+              <section
+                id="panel-advanced"
+                class="tab-panel"
+                role="tabpanel"
+                aria-labelledby="tab-advanced"
+                data-tab-group="controls"
+                data-tab-panel="advanced"
+                hidden
+              >
+                <div class="tool-section tool-section--flush">
+                  <p class="tool-section__title">Advanced Suite</p>
+
+                  <label class="control" for="outlineThickness">
+                    <span>Outline</span>
+                    <div class="control__split">
+                      <label class="toggle" for="outlineEnabled">
+                        <input id="outlineEnabled" type="checkbox" disabled>
+                        <span>Enable</span>
+                      </label>
+                      <input id="outlineColor" class="color-input" type="color" value="#101010" disabled>
+                    </div>
+                    <div class="control__row">
+                      <input id="outlineThickness" type="range" min="1" max="4" step="1" value="1" disabled>
+                      <output id="outlineThicknessValue" for="outlineThickness">1 px</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="adaptivePaletteRange">
+                    <span>Adaptive Palette Reduction</span>
+                    <div class="control__row">
+                      <input id="adaptivePaletteRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="adaptivePaletteValue" for="adaptivePaletteRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="clusterSizeRange">
+                    <span>Cluster Size</span>
+                    <div class="control__row">
+                      <input id="clusterSizeRange" type="range" min="2" max="12" step="1" value="6" disabled>
+                      <output id="clusterSizeValue" for="clusterSizeRange">6 px</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="lightNormalizeRange">
+                    <span>Light Source Normalize</span>
+                    <div class="control__row">
+                      <input id="lightNormalizeRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="lightNormalizeValue" for="lightNormalizeRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="edgeLockRange">
+                    <span>Edge-Aware Pixel Locking</span>
+                    <div class="control__row">
+                      <input id="edgeLockRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="edgeLockValue" for="edgeLockRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="aaIntentRange">
+                    <span>Subpixel Intent Detection</span>
+                    <div class="control__row">
+                      <input id="aaIntentRange" type="range" min="0" max="100" step="1" value="100" disabled>
+                      <output id="aaIntentValue" for="aaIntentRange">100%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="rampRange">
+                    <span>Color Ramp Auto-Generation</span>
+                    <div class="control__row">
+                      <input id="rampRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="rampValue" for="rampRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="ditherZoneRange">
+                    <span>Selective Dither Zones</span>
+                    <div class="control__row">
+                      <input id="ditherZoneRange" type="range" min="0" max="100" step="1" value="0" disabled>
+                      <output id="ditherZoneValue" for="ditherZoneRange">0%</output>
+                    </div>
+                  </label>
+
+                  <label class="control" for="indexedMode">
+                    <span>Indexed Palette Optimization</span>
+                    <select id="indexedMode" class="select-input" disabled>
+                      <option value="off">Off</option>
+                      <option value="perceptual">Perceptual Adjacency</option>
+                      <option value="shader">Shader LUT Friendly</option>
+                      <option value="retro">Retro Hardware Order</option>
+                    </select>
+                  </label>
+
+                  <div class="toggles">
+                    <label class="toggle" for="materialAware">
+                      <input id="materialAware" type="checkbox" disabled>
+                      <span>Material-aware enhancement</span>
+                    </label>
+                    <label class="toggle" for="showHeatmap">
+                      <input id="showHeatmap" type="checkbox" disabled>
+                      <span>Perceptual error heatmap overlay</span>
+                    </label>
+                    <label class="toggle" for="batchNormalize">
+                      <input id="batchNormalize" type="checkbox" disabled>
+                      <span>Session batch style normalization</span>
+                    </label>
+                  </div>
+
+                  <label class="control" for="previewMode">
+                    <span>Readability Simulation</span>
+                    <select id="previewMode" class="select-input" disabled>
+                      <option value="normal">Normal</option>
+                      <option value="scale_50">50%</option>
+                      <option value="scale_25">25%</option>
+                      <option value="scale_12">12.5%</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="silhouette">Silhouette</option>
+                    </select>
+                  </label>
+                </div>
+              </section>
+
+              <section
+                id="panel-settings"
+                class="tab-panel"
+                role="tabpanel"
+                aria-labelledby="tab-settings"
+                data-tab-group="controls"
+                data-tab-panel="settings"
+                hidden
+              >
+                <div class="tool-section tool-section--flush">
+                  <p class="tool-section__title">App Preferences</p>
+
+                  <label class="control" for="themeSelect">
+                    <span>Theme</span>
+                    <select id="themeSelect" class="select-input">
+                      <option value="default">Default Night</option>
+                      <option value="graphite">Graphite Calm</option>
+                      <option value="forest">Forest Terminal</option>
+                      <option value="harbor">Harbor Blue</option>
+                      <option value="ember">Ember Dusk</option>
+                      <option value="contrast">High Contrast</option>
+                    </select>
+                  </label>
+
+                  <div class="toggles">
+                    <label class="toggle" for="rememberToolSettings">
+                      <input id="rememberToolSettings" type="checkbox" checked>
+                      <span>Remember tool settings between sessions</span>
+                    </label>
+                    <label class="toggle" for="rememberActiveTabs">
+                      <input id="rememberActiveTabs" type="checkbox" checked>
+                      <span>Remember active tabs between sessions</span>
+                    </label>
+                    <label class="toggle" for="reducedMotion">
+                      <input id="reducedMotion" type="checkbox">
+                      <span>Reduce interface motion</span>
+                    </label>
+                  </div>
+
+                  <button id="resetSavedSettings" class="button button--ghost" type="button">
+                    Reset Saved Settings
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="controls-footer">
+            <button id="downloadButton" class="button button--primary" type="button" disabled>Download PNG</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel preview-panel">
+        <div class="panel__header">
+          <h2>Live Preview</h2>
+          <div class="preview-tools">
+            <select id="previewSurface" class="select-input preview-select" disabled>
+              <option value="final">Final PNG</option>
+              <option value="base">Base Color</option>
+              <option value="material">Material Map</option>
+              <option value="normal">Normal Map</option>
+              <option value="ao">AO Map</option>
+              <option value="palette">Palette LUT</option>
+            </select>
+            <span id="gridLabel" class="metric">No grid yet</span>
+          </div>
+        </div>
+
+        <div class="preview-deck">
+          <div class="tab-list tab-list--compact" role="tablist" aria-label="Preview Sections">
+            <button
+              id="tab-import"
+              class="tab-button tab-button--compact is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-import"
+              data-tab-group="preview"
+              data-tab-trigger="import"
+            >
+              Import
+            </button>
+            <button
+              id="tab-canvas"
+              class="tab-button tab-button--compact"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-canvas"
+              data-tab-group="preview"
+              data-tab-trigger="canvas"
+              data-preview-requires-image="true"
+              tabindex="-1"
+              hidden
+            >
+              Preview
+            </button>
+          </div>
+
+          <div class="tab-panels preview-panels">
+            <section
+              id="panel-import"
+              class="tab-panel preview-panel__section is-active"
+              role="tabpanel"
+              aria-labelledby="tab-import"
+              data-tab-group="preview"
+              data-tab-panel="import"
+            >
+              <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload image">
+                <input
+                  id="fileInput"
+                  class="dropzone__input"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  aria-label="Choose an image"
+                >
+                <div class="dropzone__icon" aria-hidden="true"></div>
+                <h2>Drag in a sprite, portrait, or texture.</h2>
+                <p>Click to browse or drop a file here. Transparent PNGs stay transparent.</p>
+                <label id="browseButton" class="button button--ghost" for="fileInput">Choose Image</label>
+              </div>
+              <p id="statusText" class="status">Waiting for an image.</p>
+            </section>
+
+            <section
+              id="panel-canvas"
+              class="tab-panel preview-panel__section"
+              role="tabpanel"
+              aria-labelledby="tab-canvas"
+              data-tab-group="preview"
+              data-tab-panel="canvas"
+              data-preview-requires-image="true"
+              hidden
+            >
+              <div class="preview-stage">
+                <canvas id="previewCanvas" aria-label="Processed preview"></canvas>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div id="previewProgress" class="preview-progress" hidden aria-live="polite" aria-atomic="true">
+          <div class="preview-progress__track">
+            <div id="previewProgressBar" class="preview-progress__bar"></div>
+          </div>
+          <span id="previewProgressLabel" class="preview-progress__label">Idle</span>
+        </div>
+      </section>
+
+      <aside class="panel details-panel">
+        <div class="panel__header panel__header--stacked">
+          <div>
+            <p class="eyebrow">Analysis</p>
+            <h2>Details</h2>
+          </div>
+        </div>
+
+        <div class="details-scroll">
+          <div class="diagnostic-card diagnostic-card--prominent">
+            <span class="metric-card__label">Pixel Integrity Report</span>
+            <div id="integrityReport" class="integrity-report">No analysis yet.</div>
+          </div>
+
+          <div class="diagnostic-card">
+            <span class="metric-card__label">Local Assist</span>
+            <strong id="semanticGuess">Assist disabled</strong>
+            <div id="subjectProfile" class="assist-note">Enable semantic read or smart suggestions in the Assist tab.</div>
+            <div id="assistRecommendations" class="assist-note">No local assist recommendations yet.</div>
+          </div>
+
+          <div class="metrics metrics--sidebar">
+            <div class="metric-card">
+              <span class="metric-card__label">Source</span>
+              <strong id="sourceSize">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-card__label">Detected Grid</span>
+              <strong id="detectedSize">-</strong>
+            </div>
+            <div class="metric-card">
+              <span class="metric-card__label">Export</span>
+              <strong id="exportSize">-</strong>
+            </div>
+          </div>
+
+          <div class="diagnostic-card">
+            <span class="metric-card__label">Material Classification</span>
+            <div class="analysis-visual">
+              <div id="materialPie" class="pie-chart">
+                <span class="pie-chart__label">No Data</span>
+              </div>
+              <div class="analysis-copy">
+                <strong id="materialReport">-</strong>
+                <div id="materialLegend" class="chart-legend"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="diagnostic-card">
+            <span class="metric-card__label">Light Source Direction</span>
+            <div class="analysis-visual">
+              <div id="lightPie" class="pie-chart pie-chart--small">
+                <span class="pie-chart__label">Light</span>
+              </div>
+              <div class="analysis-copy">
+                <strong id="lightDirection">-</strong>
+                <div id="lightLegend" class="chart-legend"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="palette-panel">
+            <span class="palette-panel__label">Palette Snapshot</span>
+            <div id="paletteSwatches" class="palette-swatches"></div>
+          </div>
+
+          <div class="analysis-panel">
+            <span class="palette-panel__label">Diagnostics</span>
+            <div class="analysis-grid">
+              <div class="metric-card">
+                <span class="metric-card__label">Palette Score</span>
+                <strong id="paletteScore">-</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-card__label">Readability</span>
+                <strong id="readabilityScore">-</strong>
+              </div>
+              <div class="metric-card">
+                <span class="metric-card__label">Density Check</span>
+                <strong id="densityCheck">-</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="./src/pixel-snapper.js"></script>
+  <script src="./src/main.js"></script>
+</body>
+</html>
