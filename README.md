@@ -36,8 +36,8 @@ production-grade asset pipelines.
 -   Dominant-color region resampling
 -   Optional bypass mode for raw editing
 
-![User Interface](imgs/Example1.png)
-![User Interface](imgs/Example2.png)
+![User Interface](imgs/Example1.jpg)
+![User Interface](imgs/Example2.jpg)
 ------------------------------------------------------------------------
 
 ### Palette & Quantization Control
