@@ -2,6 +2,8 @@
 
 ## [Live Here! https://pixelsnapper.tabularisgames.com/](https://pixelsnapper.tabularisgames.com/)
 
+## Tool Support & Cogheart MMO Community [Here](https://discord.gg/zQbCpdXKDW)
+
 ![User Interface](imgs/Example.png)
 An advanced pixel art resampling, snapping, and optimization tool built
 for serious production workflows. 
